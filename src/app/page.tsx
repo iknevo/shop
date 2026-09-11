@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 
+/** Renders the 8-bit-styled component preview. */
 export default function Page() {
   return (
     <div className="p-4">

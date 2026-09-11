@@ -3,6 +3,7 @@
 import { Progress as ProgressPrimitive } from "@base-ui/react/progress";
 import { cn } from "cn";
 
+/** Renders a progress root with its default track and indicator. */
 function Progress({ className, children, value, ...props }: ProgressPrimitive.Root.Props) {
   return (
     <ProgressPrimitive.Root
@@ -19,6 +20,7 @@ function Progress({ className, children, value, ...props }: ProgressPrimitive.Ro
   );
 }
 
+/** Renders the container track for a progress indicator. */
 function ProgressTrack({ className, ...props }: ProgressPrimitive.Track.Props) {
   return (
     <ProgressPrimitive.Track
@@ -29,6 +31,7 @@ function ProgressTrack({ className, ...props }: ProgressPrimitive.Track.Props) {
   );
 }
 
+/** Renders the filled portion of a progress track. */
 function ProgressIndicator({ className, ...props }: ProgressPrimitive.Indicator.Props) {
   return (
     <ProgressPrimitive.Indicator
