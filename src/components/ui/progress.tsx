@@ -3,12 +3,13 @@
 import { Progress as ProgressPrimitive } from "@base-ui/react/progress";
 import { cn } from "cn";
 
+/** Renders a progress root with its default track and indicator. */
 function Progress({ className, children, value, ...props }: ProgressPrimitive.Root.Props) {
   return (
     <ProgressPrimitive.Root
       value={value}
       data-slot="progress"
-      className={cn("flex flex-wrap gap-3", className)}
+      className={cn("flex flex-wrap gap-3", "border bg-transparent", className)}
       {...props}
     >
       {children}
@@ -19,24 +20,23 @@ function Progress({ className, children, value, ...props }: ProgressPrimitive.Ro
   );
 }
 
+/** Renders the container track for a progress indicator. */
 function ProgressTrack({ className, ...props }: ProgressPrimitive.Track.Props) {
   return (
     <ProgressPrimitive.Track
-      className={cn(
-        "bg-muted relative flex h-1 w-full items-center overflow-x-hidden rounded-full",
-        className
-      )}
+      className={cn("bg-muted relative flex h-3 w-full items-center overflow-x-hidden", className)}
       data-slot="progress-track"
       {...props}
     />
   );
 }
 
+/** Renders the filled portion of a progress track. */
 function ProgressIndicator({ className, ...props }: ProgressPrimitive.Indicator.Props) {
   return (
     <ProgressPrimitive.Indicator
       data-slot="progress-indicator"
-      className={cn("bg-primary h-full transition-all", className)}
+      className={cn("h-full transition-all", "bg-pink-400", className)}
       {...props}
     />
   );
