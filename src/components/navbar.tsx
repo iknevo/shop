@@ -49,44 +49,45 @@ const navbarItems = [
 export function Navbar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   return (
-    <nav className="flex h-20 justify-between border-b bg-white font-medium">
-      <Link href={"/"} className="flex items-center pl-6">
-        <span className={cn("text-5xl font-semibold", poppins.className)}>Shoply</span>
-      </Link>
-
+    <>
       <NavbarMobile open={isSidebarOpen} onOpenChange={setIsSidebarOpen} items={navbarItems} />
+      <nav className="flex h-20 justify-between border-b bg-white font-medium">
+        <Link href={"/"} className="flex items-center pl-6">
+          <span className={cn("text-5xl font-semibold", poppins.className)}>Shoply</span>
+        </Link>
 
-      <div className="hidden items-center gap-3 lg:flex">
-        {navbarItems.map((item) => (
-          <NavbarItem href={item.href} key={item.href}>
-            {item.children}
-          </NavbarItem>
-        ))}
-      </div>
+        <div className="hidden items-center gap-3 lg:flex">
+          {navbarItems.map((item) => (
+            <NavbarItem href={item.href} key={item.href}>
+              {item.children}
+            </NavbarItem>
+          ))}
+        </div>
 
-      <div className="hidden lg:flex">
-        <Button
-          nativeButton={false}
-          variant={"secondary"}
-          className="h-full rounded-none border-y-0 border-r-0 border-l bg-white px-12 text-lg transition-colors hover:bg-pink-400"
-          render={<Link href="/sign-in">Log in</Link>}
-        />
-        <Button
-          nativeButton={false}
-          className="h-full rounded-none border-y-0 border-r-0 border-l bg-black px-12 text-lg text-white transition-colors hover:bg-pink-400 hover:text-black"
-          render={<Link href="/sign-up">Start selling</Link>}
-        />
-      </div>
+        <div className="hidden lg:flex">
+          <Button
+            nativeButton={false}
+            variant={"secondary"}
+            className="h-full rounded-none border-y-0 border-r-0 border-l bg-white px-12 text-lg transition-colors hover:bg-pink-400"
+            render={<Link href="/sign-in">Log in</Link>}
+          />
+          <Button
+            nativeButton={false}
+            className="h-full rounded-none border-y-0 border-r-0 border-l bg-black px-12 text-lg text-white transition-colors hover:bg-pink-400 hover:text-black"
+            render={<Link href="/sign-up">Start selling</Link>}
+          />
+        </div>
 
-      <div className="flex items-center justify-center lg:hidden">
-        <Button
-          variant={"ghost"}
-          className="size-12 h-full border-transparent bg-white"
-          onClick={() => setIsSidebarOpen(true)}
-        >
-          <MenuIcon />
-        </Button>
-      </div>
-    </nav>
+        <div className="flex items-center justify-center lg:hidden">
+          <Button
+            variant={"ghost"}
+            className="size-12 h-full border-transparent bg-white"
+            onClick={() => setIsSidebarOpen(true)}
+          >
+            <MenuIcon />
+          </Button>
+        </div>
+      </nav>
+    </>
   );
 }
