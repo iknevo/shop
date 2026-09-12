@@ -68,12 +68,12 @@ export function Navbar() {
           <Button
             nativeButton={false}
             variant={"secondary"}
-            className="h-full rounded-none border-y-0 border-r-0 border-l bg-white px-12 text-lg transition-colors hover:bg-pink-400"
+            className="h-full rounded-none border-y-0 border-r-0 border-l border-black bg-white px-12 text-lg transition-colors hover:bg-pink-400 active:not-aria-[haspopup]:translate-y-0"
             render={<Link href="/sign-in">Log in</Link>}
           />
           <Button
             nativeButton={false}
-            className="h-full rounded-none border-y-0 border-r-0 border-l bg-black px-12 text-lg text-white transition-colors hover:bg-pink-400 hover:text-black"
+            className="h-full rounded-none border-y-0 border-r-0 border-l border-black bg-black px-12 text-lg text-white transition-colors hover:bg-pink-400 hover:text-black active:not-aria-[haspopup]:translate-y-0"
             render={<Link href="/sign-up">Start selling</Link>}
           />
         </div>
