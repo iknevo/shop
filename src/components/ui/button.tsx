@@ -41,7 +41,6 @@ const buttonVariants = cva(
   }
 );
 
-/** Renders a Base UI button with the project's visual variants and sizes. */
 function Button({
   className,
   variant = "default",
