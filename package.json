@@ -10,7 +10,8 @@
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "generate:types": "payload generate:types",
-    "db:fresh": "payload migrate:fresh"
+    "db:fresh": "payload migrate:fresh",
+    "db:seed": "bun run src/scripts/seed.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
