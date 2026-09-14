@@ -34,7 +34,7 @@ export function SubcategoryMenu({ category, isOpen, position }: Props) {
           {category.subcategories.map((sub: Category) => (
             <Link
               key={sub.slug}
-              href={"/"}
+              href={`/${category.slug}/${sub.slug}`}
               className="flex w-full items-center justify-between p-4 text-left font-medium underline hover:bg-black hover:text-white"
             >
               {sub.name}

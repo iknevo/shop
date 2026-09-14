@@ -1,6 +1,8 @@
 "use client";
 
 import { Button } from "../ui/button";
+import { ChevronDownIcon } from "lucide-react";
+import Link from "next/link";
 import { useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
@@ -29,22 +31,41 @@ export function CategoryDropdown({ isActive, category, isNavigationHovered }: Pr
 
   const onMouseLeave = () => setIsOpen(false);
 
+  const toggleDropdown = () => {
+    if (category.subcategories?.docs?.length) {
+      setIsOpen((c) => !c);
+    }
+  };
+
   return (
     <div
       className="relative"
       ref={dropdownRef}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      onClick={toggleDropdown}
     >
       <div className="relative">
         <Button
           variant="elevated"
           className={cn(
             "hover:border-primary h-11 rounded-full border-transparent bg-transparent px-4 text-black hover:bg-white",
-            isActive && !isNavigationHovered && "border-primary bg-white"
+            isActive && !isNavigationHovered && "border-primary bg-white",
+            isOpen &&
+              "border-border -translate-x-0.75 -translate-y-0.75 bg-white shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all"
           )}
         >
-          {category.name}
+          <Link
+            href={`/${category.slug === "all" ? "" : category.slug}`}
+            className="flex items-center"
+          >
+            {category.name}
+            {category.subcategories && category.subcategories.length > 0 && (
+              <span className="ml-1 flex w-5 shrink-0 items-center justify-center">
+                <ChevronDownIcon />
+              </span>
+            )}
+          </Link>
         </Button>
 
         {category.subcategories && category.subcategories.length > 0 && (

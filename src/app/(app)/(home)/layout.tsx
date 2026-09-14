@@ -18,6 +18,7 @@ export default async function Layout({ children }: LayoutProps<"/">) {
         exists: false,
       },
     },
+    sort: "name",
   });
 
   const formattedDate = data.docs.map((doc) => ({
