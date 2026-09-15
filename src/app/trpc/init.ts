@@ -1,0 +1,20 @@
+import configPromise from "@payload-config";
+import { initTRPC } from "@trpc/server";
+import { getPayload } from "payload";
+import { cache } from "react";
+import superjson from "superjson";
+
+export const createTRPCContext = cache(async () => {
+  return { userId: "user_123" };
+});
+
+const t = initTRPC.create({
+  transformer: superjson,
+});
+
+export const createTRPCRouter = t.router;
+export const createCallerFactory = t.createCallerFactory;
+export const publicProcedure = t.procedure.use(async ({ next }) => {
+  const payload = await getPayload({ config: configPromise });
+  return next({ ctx: { payload } });
+});

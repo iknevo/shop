@@ -8,10 +8,10 @@ import { cn } from "@/lib/utils";
 
 import { CategoriesSidebar } from "./categories-sidebar";
 import { CategoryDropdown } from "./category-dropdown";
-import { Category } from "@/payload-types";
+import { CategoriesGetManyOutput } from "@/modules/categories/types";
 
 interface Props {
-  data: any;
+  data: CategoriesGetManyOutput;
 }
 
 export function Categories({ data }: Props) {
@@ -54,7 +54,7 @@ export function Categories({ data }: Props) {
 
   return (
     <div className="relative w-full">
-      <CategoriesSidebar open={isSidebarOpen} onOpenChange={setIsSidebarOpen} data={data} />
+      <CategoriesSidebar open={isSidebarOpen} onOpenChange={setIsSidebarOpen} />
       {/* just a solution to know the sizes ahead it doesn't get displayed */}
       <div
         ref={measureRef}
@@ -65,7 +65,7 @@ export function Categories({ data }: Props) {
           left: -999,
         }}
       >
-        {data.map((category: Category) => (
+        {data.map((category) => (
           <div key={category.id}>
             <CategoryDropdown
               category={category}
@@ -83,7 +83,7 @@ export function Categories({ data }: Props) {
         onMouseLeave={() => setIsAnyHovered(false)}
         className="flex flex-nowrap items-center gap-2"
       >
-        {data.slice(0, visibleCount).map((category: Category) => (
+        {data.slice(0, visibleCount).map((category) => (
           <div key={category.id}>
             <CategoryDropdown
               category={category}

@@ -7,11 +7,11 @@ import { useState } from "react";
 
 import { CategoriesSidebar } from "./categories-sidebar";
 
-export function SearchInput({ disabled, data }: { disabled?: boolean; data: any }) {
+export function SearchInput({ disabled }: { disabled?: boolean }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   return (
     <div className="flex w-full items-center gap-2">
-      <CategoriesSidebar open={isSidebarOpen} onOpenChange={setIsSidebarOpen} data={data} />
+      <CategoriesSidebar open={isSidebarOpen} onOpenChange={setIsSidebarOpen} />
       <div className="relative w-full">
         <SearchIcon className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-neutral-500" />
         <Input className="pl-8" placeholder="Search products" disabled={disabled} />

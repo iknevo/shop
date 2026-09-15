@@ -9,10 +9,10 @@ import { cn } from "@/lib/utils";
 
 import { SubcategoryMenu } from "./subcategory-menu";
 import { useDropdownPosition } from "@/hooks/use-dropdown-position";
-import { Category } from "@/payload-types";
+import { CategoryType } from "@/modules/categories/types";
 
 interface Props {
-  category: Category;
+  category: CategoryType;
   isActive?: boolean;
   isNavigationHovered?: boolean;
 }
@@ -31,11 +31,12 @@ export function CategoryDropdown({ isActive, category, isNavigationHovered }: Pr
 
   const onMouseLeave = () => setIsOpen(false);
 
-  const toggleDropdown = () => {
-    if (category.subcategories?.docs?.length) {
-      setIsOpen((c) => !c);
-    }
-  };
+  // const toggleDropdown = () => {
+  //   if (category.subcategories?.docs?.length) {
+  //     setIsOpen((c) => !c);
+  //   }
+  // };
+  //
 
   return (
     <div
@@ -43,7 +44,7 @@ export function CategoryDropdown({ isActive, category, isNavigationHovered }: Pr
       ref={dropdownRef}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      onClick={toggleDropdown}
+      // onClick={toggleDropdown}
     >
       <div className="relative">
         <Button

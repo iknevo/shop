@@ -1,3 +1,4 @@
+import { TRPCReactProvider } from "../trpc/client";
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 
@@ -17,7 +18,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={cn("h-full", "antialiased", "font-sans", dmSans.className)}>
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        <TRPCReactProvider>{children}</TRPCReactProvider>
+      </body>
     </html>
   );
 }
