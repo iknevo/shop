@@ -1,9 +1,9 @@
 import Link from "next/link";
 
-import { Category } from "@/payload-types";
+import { CategoryType } from "@/modules/categories/types";
 
 interface Props {
-  category: Category;
+  category: CategoryType;
   isOpen: boolean;
   position: { left: number; top: number };
 }
@@ -31,7 +31,7 @@ export function SubcategoryMenu({ category, isOpen, position }: Props) {
         }}
       >
         <div>
-          {category.subcategories.map((sub: Category) => (
+          {category.subcategories.map((sub) => (
             <Link
               key={sub.slug}
               href={`/${category.slug}/${sub.slug}`}
