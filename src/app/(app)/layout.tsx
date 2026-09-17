@@ -4,6 +4,8 @@ import { DM_Sans } from "next/font/google";
 
 import { cn } from "@/lib/utils";
 
+import { Toaster } from "@/components/ui/toast";
+
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -19,7 +21,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={cn("h-full", "antialiased", "font-sans", dmSans.className)}>
       <body className="flex min-h-full flex-col">
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <TRPCReactProvider>
+          <main>{children}</main>
+          <Toaster />
+        </TRPCReactProvider>
       </body>
     </html>
   );
