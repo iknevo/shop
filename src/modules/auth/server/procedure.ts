@@ -1,7 +1,7 @@
-import { AUTH_COOKIE } from "../constants";
+import { generateAuthCookie } from "../utils";
 import { loginSchema, registerSchema } from "../validation";
 import { TRPCError } from "@trpc/server";
-import { cookies as nextCookies, headers as nextHeaders } from "next/headers";
+import { headers as nextHeaders } from "next/headers";
 
 import { createTRPCRouter, publicProcedure } from "@/app/trpc/init";
 
@@ -16,7 +16,6 @@ export const authRouter = createTRPCRouter({
 
   register: publicProcedure.input(registerSchema).mutation(async ({ ctx, input }) => {
     const { email, password, username } = input;
-    const cookies = await nextCookies();
 
     const exsitingData = await ctx.payload.find({
       collection: "users",
@@ -48,21 +47,16 @@ export const authRouter = createTRPCRouter({
       },
     });
     if (!data.token) throw new TRPCError({ code: "UNAUTHORIZED", message: "Failed to login" });
-    cookies.set({
-      name: AUTH_COOKIE,
+
+    await generateAuthCookie({
+      prefix: ctx.payload.config.cookiePrefix,
       value: data.token,
-      httpOnly: true,
-      path: "/",
-      //   sameSite: "none",
-      // domain:""
-      // TODO: ensure cross domain cookie sharing
     });
     return data;
   }),
 
   login: publicProcedure.input(loginSchema).mutation(async ({ ctx, input }) => {
     const { email, password } = input;
-    const cookies = await nextCookies();
     const data = await ctx.payload.login({
       collection: "users",
       data: {
@@ -71,20 +65,10 @@ export const authRouter = createTRPCRouter({
       },
     });
     if (!data.token) throw new TRPCError({ code: "UNAUTHORIZED", message: "Failed to login" });
-    cookies.set({
-      name: AUTH_COOKIE,
+    await generateAuthCookie({
+      prefix: ctx.payload.config.cookiePrefix,
       value: data.token,
-      httpOnly: true,
-      path: "/",
-      //   sameSite: "none",
-      // domain:""
-      // TODO: ensure cross domain cookie sharing
     });
     return data;
-  }),
-
-  logout: publicProcedure.mutation(async () => {
-    const cookies = await nextCookies();
-    cookies.delete(AUTH_COOKIE);
   }),
 });

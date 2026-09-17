@@ -1,5 +1,6 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { MenuIcon } from "lucide-react";
 import { Poppins } from "next/font/google";
 import Link from "next/link";
@@ -7,6 +8,8 @@ import { usePathname } from "next/navigation";
 import { ReactNode, useState } from "react";
 
 import { cn } from "@/lib/utils";
+
+import { useTRPC } from "@/app/trpc/client";
 
 import { NavbarMobile } from "./navbar-mobile";
 import { Button } from "./ui/button";
@@ -48,6 +51,10 @@ const navbarItems = [
 
 export function Navbar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const trpc = useTRPC();
+  const session = useQuery(trpc.auth.session.queryOptions());
+
   return (
     <>
       <NavbarMobile open={isSidebarOpen} onOpenChange={setIsSidebarOpen} items={navbarItems} />
@@ -64,19 +71,37 @@ export function Navbar() {
           ))}
         </div>
 
-        <div className="hidden lg:flex">
-          <Button
-            nativeButton={false}
-            variant={"secondary"}
-            className="h-full rounded-none border-y-0 border-r-0 border-l border-black bg-white px-12 text-lg transition-colors hover:bg-pink-400 active:not-aria-[haspopup]:translate-y-0"
-            render={<Link href="/sign-in">Log in</Link>}
-          />
-          <Button
-            nativeButton={false}
-            className="h-full rounded-none border-y-0 border-r-0 border-l border-black bg-black px-12 text-lg text-white transition-colors hover:bg-pink-400 hover:text-black active:not-aria-[haspopup]:translate-y-0"
-            render={<Link href="/sign-up">Start selling</Link>}
-          />
-        </div>
+        {session.data?.user ? (
+          <div className="hidden lg:flex">
+            <Button
+              nativeButton={false}
+              className="h-full rounded-none border-y-0 border-r-0 border-l border-black bg-black px-12 text-lg text-white transition-colors hover:bg-pink-400 hover:text-black active:not-aria-[haspopup]:translate-y-0"
+              render={<Link href="/admin">Dashboard</Link>}
+            />
+          </div>
+        ) : (
+          <div className="hidden lg:flex">
+            <Button
+              nativeButton={false}
+              variant={"secondary"}
+              className="h-full rounded-none border-y-0 border-r-0 border-l border-black bg-white px-12 text-lg transition-colors hover:bg-pink-400 active:not-aria-[haspopup]:translate-y-0"
+              render={
+                <Link prefetch href="/sign-in">
+                  Log in
+                </Link>
+              }
+            />
+            <Button
+              nativeButton={false}
+              className="h-full rounded-none border-y-0 border-r-0 border-l border-black bg-black px-12 text-lg text-white transition-colors hover:bg-pink-400 hover:text-black active:not-aria-[haspopup]:translate-y-0"
+              render={
+                <Link prefetch href="/sign-up">
+                  Start selling
+                </Link>
+              }
+            />
+          </div>
+        )}
 
         <div className="flex items-center justify-center lg:hidden">
           <Button
