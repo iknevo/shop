@@ -2,6 +2,10 @@ import { createTRPCRouter, publicProcedure } from "@/app/trpc/init";
 
 import { Category } from "@/payload-types";
 
+type CategoryWithSubcategories = Omit<Category, "subcategories"> & {
+  subcategories: Category[];
+};
+
 export const categoriesRouter = createTRPCRouter({
   getMany: publicProcedure.query(async ({ ctx }) => {
     const data = await ctx.payload.find({
@@ -16,15 +20,11 @@ export const categoriesRouter = createTRPCRouter({
       sort: "name",
     });
 
-    const formattedDate = data.docs.map((doc) => ({
+    const formattedData: CategoryWithSubcategories[] = data.docs.map((doc) => ({
       ...doc,
-      subcategories: (doc.subcategories?.docs ?? []).map((item) => ({
-        // the option depth: 1 auto populates the document instead of just getting the id, depth 1 is the default but because there's an option for 0 which would only give us the doc id, payload infers it as string | Category. but we are sure it will be populated so we can safely cast it's type
-        ...(item as Category),
-        subcategories: undefined,
-      })),
+      subcategories: (doc.subcategories?.docs ?? []).map((item) => item as Category),
     }));
 
-    return formattedDate;
+    return formattedData;
   }),
 });

@@ -1,11 +1,12 @@
 "use client";
 
-import { Button } from "../ui/button";
 import { ChevronDownIcon } from "lucide-react";
 import Link from "next/link";
 import { useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
+
+import { Button } from "@/components/ui/button";
 
 import { SubcategoryMenu } from "./subcategory-menu";
 import { useDropdownPosition } from "@/hooks/use-dropdown-position";
@@ -48,6 +49,7 @@ export function CategoryDropdown({ isActive, category, isNavigationHovered }: Pr
     >
       <div className="relative">
         <Button
+          nativeButton={false}
           variant="elevated"
           className={cn(
             "hover:border-primary h-11 rounded-full border-transparent bg-transparent px-4 text-black hover:bg-white",
@@ -55,19 +57,20 @@ export function CategoryDropdown({ isActive, category, isNavigationHovered }: Pr
             isOpen &&
               "border-border -translate-x-0.75 -translate-y-0.75 bg-white shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all"
           )}
-        >
-          <Link
-            href={`/${category.slug === "all" ? "" : category.slug}`}
-            className="flex items-center"
-          >
-            {category.name}
-            {category.subcategories && category.subcategories.length > 0 && (
-              <span className="ml-1 flex w-5 shrink-0 items-center justify-center">
-                <ChevronDownIcon />
-              </span>
-            )}
-          </Link>
-        </Button>
+          render={
+            <Link
+              href={`/${category.slug === "all" ? "" : category.slug}`}
+              className="flex items-center"
+            >
+              {category.name}
+              {category.subcategories && category.subcategories.length > 0 && (
+                <span className="ml-1 flex w-5 shrink-0 items-center justify-center">
+                  <ChevronDownIcon />
+                </span>
+              )}
+            </Link>
+          }
+        />
 
         {category.subcategories && category.subcategories.length > 0 && (
           <div

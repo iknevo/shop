@@ -1,8 +1,9 @@
 import { HydrateClient, prefetch, trpc } from "@/app/trpc/server";
 
 import { Footer } from "@/components/footer";
-import { Navbar } from "@/components/navbar";
-import { SearchFilters } from "@/components/search-filters";
+
+import { Navbar } from "@/modules/home/ui/components/navbar";
+import { SearchFilters } from "@/modules/home/ui/components/search-filters";
 
 export default async function Layout({ children }: LayoutProps<"/">) {
   prefetch(trpc.categories.getMany.queryOptions());
