@@ -1,13 +1,14 @@
 "use client";
 
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { BookmarkCheckIcon, ListFilterIcon, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
 import { useTRPC } from "@/app/trpc/client";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 import { CategoriesSidebar } from "./categories-sidebar";
 

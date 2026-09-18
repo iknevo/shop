@@ -1,13 +1,14 @@
 "use client";
 
-import { ScrollArea } from "../ui/scroll-area";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "../ui/sheet";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { useTRPC } from "@/app/trpc/client";
+
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 import { CategoriesGetManyOutput, CategoryType } from "@/modules/categories/types";
 

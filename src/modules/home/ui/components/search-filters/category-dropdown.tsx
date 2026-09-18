@@ -1,11 +1,12 @@
 "use client";
 
-import { Button } from "../ui/button";
 import { ChevronDownIcon } from "lucide-react";
 import Link from "next/link";
 import { useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
+
+import { Button } from "@/components/ui/button";
 
 import { SubcategoryMenu } from "./subcategory-menu";
 import { useDropdownPosition } from "@/hooks/use-dropdown-position";

@@ -1,10 +1,11 @@
 "use client";
 
-import { Button } from "../ui/button";
 import { ListFilterIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
+
+import { Button } from "@/components/ui/button";
 
 import { CategoriesSidebar } from "./categories-sidebar";
 import { CategoryDropdown } from "./category-dropdown";
