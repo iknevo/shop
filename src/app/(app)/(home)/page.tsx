@@ -4,9 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 
 import { useTRPC } from "@/app/trpc/client";
 
+import { PrettyStringify } from "@/components/dev/pretty-stringify";
+
 export default function Page() {
   const trpc = useTRPC();
   const { data } = useQuery(trpc.auth.session.queryOptions());
-  return <div>{JSON.stringify(data?.user, null, 2)}</div>;
-  // return <div>Home</div>;
+  return <PrettyStringify data={data?.user} />;
 }
