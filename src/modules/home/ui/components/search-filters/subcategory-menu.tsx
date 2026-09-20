@@ -1,4 +1,9 @@
+"use client";
+
 import Link from "next/link";
+import { useParams } from "next/navigation";
+
+import { cn } from "@/lib/utils";
 
 import { CategoryType } from "@/modules/categories/types";
 
@@ -9,6 +14,9 @@ interface Props {
 }
 
 export function SubcategoryMenu({ category, isOpen, position }: Props) {
+  const params = useParams();
+  const activeSub = (params.subcategory as string) ?? "";
+
   if (!isOpen || !category.subcategories || category.subcategories.length === 0) {
     return null;
   }
@@ -35,7 +43,10 @@ export function SubcategoryMenu({ category, isOpen, position }: Props) {
             <Link
               key={sub.slug}
               href={`/${category.slug}/${sub.slug}`}
-              className="flex w-full items-center justify-between p-4 text-left font-medium underline hover:bg-black hover:text-white"
+              className={cn(
+                "flex w-full items-center justify-between p-4 text-left font-medium underline hover:bg-black hover:text-white",
+                sub.slug === activeSub && "bg-black text-white"
+              )}
             >
               {sub.name}
             </Link>

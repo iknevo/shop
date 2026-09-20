@@ -7,6 +7,7 @@ export const Products: CollectionConfig = {
     { name: "description", type: "text" },
     { name: "price", type: "number", required: true, admin: { description: "in USD" } },
     { name: "category", type: "relationship", relationTo: "categories", hasMany: false },
+    { name: "tags", type: "relationship", relationTo: "tags", hasMany: false },
     { name: "image", type: "upload", relationTo: "media" },
     {
       name: "refundPlicy",
