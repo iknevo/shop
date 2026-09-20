@@ -33,12 +33,12 @@ export const formatAsCurrency = (value: string) => {
 
 export function PriceFilter({ minPrice, maxPrice, onMaxPriceChange, onMinPriceChange }: Props) {
   const handleMinPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const numbericValue = e.target.value.replace(/^0-9./g, "");
+    const numbericValue = e.target.value.replace(/[^0-9.]/g, "");
     onMinPriceChange(numbericValue);
   };
 
   const handleMaxPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const numbericValue = e.target.value.replace(/^0-9./g, "");
+    const numbericValue = e.target.value.replace(/[^0-9.]/g, "");
     onMaxPriceChange(numbericValue);
   };
 

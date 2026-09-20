@@ -1,14 +1,20 @@
+import { SearchParams } from "nuqs/server";
+
 import { HydrateClient, prefetch, trpc } from "@/app/trpc/server";
 
+import { loadProductsFilters } from "@/modules/products/hooks/use-product-filters";
 import { ProductFilters } from "@/modules/products/ui/components/product-filters";
 import { ProductList } from "@/modules/products/ui/components/product-list";
 
 interface Props {
   params: Promise<{ category: string }>;
+
+  searchParams: Promise<SearchParams>;
 }
-export default async function Page({ params }: Props) {
+export default async function Page({ params, searchParams }: Props) {
   const { category } = await params;
-  prefetch(trpc.products.getMany.queryOptions({ category }));
+  const filters = await loadProductsFilters(searchParams);
+  prefetch(trpc.products.getMany.queryOptions({ category, ...filters }));
 
   return (
     <HydrateClient>
