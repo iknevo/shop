@@ -30,12 +30,27 @@ export const authRouter = createTRPCRouter({
     if (exsitingUser)
       throw new TRPCError({ code: "BAD_REQUEST", message: "Username already taken" });
 
+    const tenant = await ctx.payload.create({
+      collection: "tenants",
+      data: {
+        name: username,
+        slug: username,
+        stripeAccountId: "mock",
+      },
+    });
+
     await ctx.payload.create({
       collection: "users",
       data: {
         email,
         password,
         username,
+        roles: ["user"],
+        tenants: [
+          {
+            tenant: tenant.id,
+          },
+        ],
       },
     });
 
@@ -46,6 +61,7 @@ export const authRouter = createTRPCRouter({
         password,
       },
     });
+
     if (!data.token) throw new TRPCError({ code: "UNAUTHORIZED", message: "Failed to login" });
 
     await generateAuthCookie({

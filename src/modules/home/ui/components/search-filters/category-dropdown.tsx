@@ -56,7 +56,7 @@ export function CategoryDropdown({ isActive, category, isNavigationHovered }: Pr
           )}
           render={
             <Link
-              href={`/${category.slug === "all" ? "" : category.slug}`}
+              href={`/categories/${category.slug === "all" ? "" : category.slug}`}
               className="flex items-center"
             >
               {category.name}
