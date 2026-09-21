@@ -10,10 +10,9 @@ import { CategoryType } from "@/modules/categories/types";
 interface Props {
   category: CategoryType;
   isOpen: boolean;
-  position: { left: number; top: number };
 }
 
-export function SubcategoryMenu({ category, isOpen, position }: Props) {
+export function SubcategoryMenu({ category, isOpen }: Props) {
   const params = useParams();
   const activeSub = (params.subcategory as string) ?? "";
 
@@ -25,10 +24,10 @@ export function SubcategoryMenu({ category, isOpen, position }: Props) {
 
   return (
     <div
-      className="fixed z-100"
+      className="absolute z-100"
       style={{
-        top: position.top,
-        left: position.left,
+        top: "100%",
+        left: 0,
       }}
     >
       <div className="h-3 w-60" />
