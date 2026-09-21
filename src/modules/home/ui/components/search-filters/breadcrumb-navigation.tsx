@@ -29,7 +29,7 @@ export function BreadcrumbNavigation({
             <BreadcrumbItem>
               <BreadcrumbLink
                 className="text-primary text-xl font-medium underline"
-                render={<Link href={`/${activeCategory}`}>{activeCategoryName}</Link>}
+                render={<Link href={`/categories/${activeCategory}`}>{activeCategoryName}</Link>}
               />
             </BreadcrumbItem>
             <BreadcrumbSeparator className="text-primary text-lg font-medium">
