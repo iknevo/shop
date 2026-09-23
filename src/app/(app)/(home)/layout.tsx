@@ -1,7 +1,6 @@
 import { HydrateClient, prefetch, trpc } from "@/app/trpc/server";
 
-import { Footer } from "@/components/footer";
-
+import { Footer } from "@/modules/home/ui/components/footer";
 import { Navbar } from "@/modules/home/ui/components/navbar";
 import { SearchFilters } from "@/modules/home/ui/components/search-filters";
 

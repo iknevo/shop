@@ -27,6 +27,7 @@ export function SignUpView() {
   const router = useRouter();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
+
   const register = useMutation(
     trpc.auth.register.mutationOptions({
       onSuccess: async () => {

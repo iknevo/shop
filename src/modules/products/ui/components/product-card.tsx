@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MouseEvent } from "react";
 
-import { generateTenantURL } from "@/lib/utils";
+import { formatPrice, generateTenantURL } from "@/lib/utils";
 
 import { IMAGE_PLACEHOLDER } from "@/constants";
 
@@ -30,6 +30,7 @@ export function ProductCard({
   imageUrl,
 }: Props) {
   const router = useRouter();
+
   const handleUserClick = (e: MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -37,7 +38,7 @@ export function ProductCard({
   };
 
   return (
-    <Link href={`/products/${id}`}>
+    <Link href={`${generateTenantURL(tenantSlug)}/products/${id}`}>
       <div className="flex h-full flex-col overflow-hidden rounded-md border bg-white transition-shadow hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
         <div className="relative aspect-square">
           <Image alt={name} fill className="object-cover" src={imageUrl ?? IMAGE_PLACEHOLDER} />
@@ -69,13 +70,7 @@ export function ProductCard({
         </div>
         <div className="p-4">
           <div className="relative w-fit border bg-pink-400 px-2 py-1">
-            <p className="text-sm font-medium">
-              {new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "USD",
-                maximumFractionDigits: 0,
-              }).format(price)}
-            </p>
+            <p className="text-sm font-medium">{formatPrice(price)}</p>
           </div>
         </div>
       </div>

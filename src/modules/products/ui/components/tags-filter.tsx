@@ -16,6 +16,7 @@ interface Props {
 
 export function TagsFilter({ value, onChange }: Props) {
   const trpc = useTRPC();
+
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
     trpc.tags.getMany.infiniteQueryOptions(
       { limit: DEFAULT_LIMIT },

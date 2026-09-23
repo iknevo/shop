@@ -15,6 +15,7 @@ import { Users } from "./collections/Users";
 import type { Config } from "./payload-types";
 
 const filename = fileURLToPath(import.meta.url);
+
 const dirname = path.dirname(filename);
 
 export default buildConfig({

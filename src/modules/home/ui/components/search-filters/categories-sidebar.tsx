@@ -46,6 +46,7 @@ export function CategoriesSidebar({ onOpenChange, open }: Props) {
           router.push(`/${category.slug}`);
         }
       }
+
       handleOpenChange(false);
     }
   };

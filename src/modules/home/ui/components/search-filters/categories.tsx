@@ -42,6 +42,7 @@ export function Categories({ data }: Props) {
       const items = Array.from(measureRef.current.children);
       let totalWidth = 0;
       let visible = 0;
+
       for (const item of items) {
         const itemWidth = item.getBoundingClientRect().width;
 
@@ -49,10 +50,13 @@ export function Categories({ data }: Props) {
         totalWidth += itemWidth;
         visible += 1;
       }
+
       setVisibleCount(visible);
     };
+
     const resizeObserver = new ResizeObserver(calculateVisible);
     resizeObserver.observe(containerRef.current!);
+
     return () => resizeObserver.disconnect();
   }, [data.length]);
 

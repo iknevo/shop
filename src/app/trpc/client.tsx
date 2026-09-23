@@ -19,15 +19,19 @@ function getQueryClient() {
   if (typeof window === "undefined") {
     return makeQueryClient();
   }
+
   if (!browserQueryClient) browserQueryClient = makeQueryClient();
+
   return browserQueryClient;
 }
 
 function getUrl() {
   const base = (() => {
     if (typeof window !== "undefined") return "";
+
     return process.env.NEXT_PUBLIC_APP_URL;
   })();
+
   return `${base}/api/trpc`;
 }
 
@@ -37,6 +41,7 @@ export function TRPCReactProvider(
   }>
 ) {
   const queryClient = getQueryClient();
+
   const [trpcClient] = useState(() =>
     createTRPCClient<AppRouter>({
       links: [
@@ -47,6 +52,7 @@ export function TRPCReactProvider(
       ],
     })
   );
+
   return (
     <QueryClientProvider client={queryClient}>
       <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>

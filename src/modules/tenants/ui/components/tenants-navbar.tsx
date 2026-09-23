@@ -26,11 +26,13 @@ export function TenantsNavbar({ slug }: Props) {
 
 function TenantsNavbarSuspense({ slug }: Props) {
   const trpc = useTRPC();
+
   const { data } = useSuspenseQuery(
     trpc.tenants.getOne.queryOptions({
       slug,
     })
   );
+
   return (
     <nav className="h-20 border-b bg-white font-medium">
       <div className="mx-auto flex h-full max-w-(--breakpoint-xl) items-center justify-between px-4 lg:px-12">

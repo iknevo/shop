@@ -8,6 +8,28 @@ import { sortValues } from "@/hooks/search-params";
 import { Category, Media, Tenant } from "@/payload-types";
 
 export const productsRouter = createTRPCRouter({
+  getOne: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const product = await ctx.payload.findByID({
+        collection: "products",
+        id: input.id,
+        depth: 2,
+      });
+
+      return {
+        ...product,
+        // SAFETY: we used depth: 2, which will populate the subcategory so we will get the Image type not the id as a string but payload has no type detection for that so it will use Image | string by default
+        image: product.image as Media | null,
+        // SAFETY: using depth: 2
+        tenant: product.tenant as Tenant & { image: Media | null },
+      };
+    }),
+
   getMany: publicProcedure
     .input(
       z.object({
@@ -79,10 +101,12 @@ export const productsRouter = createTRPCRouter({
 
         const formattedData = categoriesData.docs.map((doc) => ({
           ...doc,
+          // SAFETY: we used depth: 1, which will populate the subcategory so we will get the Category type not the id as a string but payload has no type detection for that so it will use Category | string by default
           subcategories: (doc.subcategories?.docs ?? []).map((item) => item as Category),
         }));
 
         const parentCategory = formattedData[0];
+
         if (parentCategory) {
           where["category.slug"] = {
             in: [
@@ -107,7 +131,10 @@ export const productsRouter = createTRPCRouter({
         ...data,
         docs: data.docs.map((document) => ({
           ...document,
+
+          // SAFETY: Payload returns `image` as a populated Media document at the configured depth.
           image: document.image as Media | null,
+          // SAFETY: Payload returns `tenant` as a populated Tenant document with its image populated.
           tenant: document.tenant as Tenant & { image: Media | null },
         })),
       };

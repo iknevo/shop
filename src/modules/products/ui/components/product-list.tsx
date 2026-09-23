@@ -34,6 +34,7 @@ export function ProductList({ category, tenantSlug, narrowView }: Props) {
 function ProductListSuspense({ category, tenantSlug, narrowView }: Props) {
   const [filters] = useProductFilters();
   const trpc = useTRPC();
+
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useSuspenseInfiniteQuery(
     trpc.products.getMany.infiniteQueryOptions(
       { ...filters, category, tenantSlug, limit: DEFAULT_LIMIT },
