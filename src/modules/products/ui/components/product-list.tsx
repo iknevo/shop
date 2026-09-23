@@ -6,6 +6,8 @@ import { Inbox } from "lucide-react";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
+import { cn } from "@/lib/utils";
+
 import { useTRPC } from "@/app/trpc/client";
 
 import { Button } from "@/components/ui/button";
@@ -15,24 +17,26 @@ import { DEFAULT_LIMIT } from "@/constants";
 
 interface Props {
   category?: string;
+  tenantSlug?: string;
+  narrowView?: boolean;
 }
 
-export function ProductList({ category }: Props) {
+export function ProductList({ category, tenantSlug, narrowView }: Props) {
   return (
-    <Suspense fallback={<ProductListLoading />}>
+    <Suspense fallback={<ProductListLoading narrowView={narrowView} />}>
       <ErrorBoundary fallback={<p>error</p>}>
-        <ProductListSuspense category={category} />
+        <ProductListSuspense category={category} tenantSlug={tenantSlug} narrowView={narrowView} />
       </ErrorBoundary>
     </Suspense>
   );
 }
 
-function ProductListSuspense({ category }: Props) {
+function ProductListSuspense({ category, tenantSlug, narrowView }: Props) {
   const [filters] = useProductFilters();
   const trpc = useTRPC();
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useSuspenseInfiniteQuery(
     trpc.products.getMany.infiniteQueryOptions(
-      { ...filters, category, limit: DEFAULT_LIMIT },
+      { ...filters, category, tenantSlug, limit: DEFAULT_LIMIT },
       {
         getNextPageParam: (lastPage) => {
           return lastPage.docs.length > 0 ? lastPage.nextPage : undefined;
@@ -53,7 +57,12 @@ function ProductListSuspense({ category }: Props) {
   // TODO: change to the correct data
   return (
     <>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+      <div
+        className={cn(
+          "grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4",
+          narrowView && "2xl:grid-cols-3"
+        )}
+      >
         {data.pages
           .flatMap((page) => page.docs)
           .map((product) => (
@@ -62,8 +71,8 @@ function ProductListSuspense({ category }: Props) {
               id={product.id}
               name={product.name}
               imageUrl={product.image?.url}
-              authorUsername={product.tenant.name}
-              authorImageUrl={product.tenant.image?.url}
+              tenantSlug={product.tenant.slug}
+              tenantImageUrl={product.tenant.image?.url}
               reviewRating={3}
               reviewCount={5}
               price={product.price}
@@ -86,9 +95,14 @@ function ProductListSuspense({ category }: Props) {
   );
 }
 
-function ProductListLoading() {
+function ProductListLoading({ narrowView }: Props) {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+    <div
+      className={cn(
+        "grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4",
+        narrowView && "2xl:grid-cols-3"
+      )}
+    >
       {Array.from({ length: DEFAULT_LIMIT }).map((_, index) => (
         <ProductCardLoading key={index} />
       ))}
