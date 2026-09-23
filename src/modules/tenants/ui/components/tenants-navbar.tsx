@@ -1,6 +1,8 @@
 "use client";
 
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { ShoppingCartIcon } from "lucide-react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -9,6 +11,21 @@ import { ErrorBoundary } from "react-error-boundary";
 import { generateTenantURL } from "@/lib/utils";
 
 import { useTRPC } from "@/app/trpc/client";
+
+import { Button } from "@/components/ui/button";
+
+const CheckoutButton = dynamic(
+  () =>
+    import("@/modules/checkout/ui/components/checkout-button").then((mod) => mod.CheckoutButton),
+  {
+    ssr: false,
+    loading: () => (
+      <Button disabled className="bg-white">
+        <ShoppingCartIcon className="text-black" />
+      </Button>
+    ),
+  }
+);
 
 interface Props {
   slug: string;
@@ -48,6 +65,7 @@ function TenantsNavbarSuspense({ slug }: Props) {
           )}
           <p className="text-xl">{data.name}</p>
         </Link>
+        <CheckoutButton tenantSlug={slug} />
       </div>
     </nav>
   );
@@ -60,6 +78,10 @@ function TenantsNavbarLoading() {
         <p className="text-xl">
           <span className="sr-only">loading</span>
         </p>
+
+        <Button disabled className="bg-white">
+          <ShoppingCartIcon className="text-black" />
+        </Button>
       </div>
     </nav>
   );
