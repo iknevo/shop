@@ -5,7 +5,7 @@ import { createTRPCRouter, publicProcedure } from "@/app/trpc/init";
 
 import { DEFAULT_LIMIT } from "@/constants";
 import { sortValues } from "@/hooks/search-params";
-import { Category, Media } from "@/payload-types";
+import { Category, Media, Tenant } from "@/payload-types";
 
 export const productsRouter = createTRPCRouter({
   getMany: publicProcedure
@@ -87,7 +87,7 @@ export const productsRouter = createTRPCRouter({
 
       const data = await ctx.payload.find({
         collection: "products",
-        depth: 1,
+        depth: 2,
         pagination: true,
         where,
         sort,
@@ -100,6 +100,7 @@ export const productsRouter = createTRPCRouter({
         docs: data.docs.map((document) => ({
           ...document,
           image: document.image as Media | null,
+          tenant: document.tenant as Tenant & { image: Media | null },
         })),
       };
     }),
