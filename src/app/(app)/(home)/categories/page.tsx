@@ -9,6 +9,7 @@ import { ProductListView } from "@/modules/products/ui/views/product-list-view";
 interface Props {
   searchParams: Promise<SearchParams>;
 }
+
 export default async function Page({ searchParams }: Props) {
   const filters = await loadProductsFilters(searchParams);
   prefetch(

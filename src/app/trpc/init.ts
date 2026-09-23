@@ -13,8 +13,11 @@ const t = initTRPC.create({
 });
 
 export const createTRPCRouter = t.router;
+
 export const createCallerFactory = t.createCallerFactory;
+
 export const publicProcedure = t.procedure.use(async ({ next }) => {
   const payload = await getPayload({ config: configPromise });
+
   return next({ ctx: { payload } });
 });

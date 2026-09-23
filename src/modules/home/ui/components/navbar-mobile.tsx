@@ -8,11 +8,13 @@ interface NavbarItem {
   href: string;
   children: ReactNode;
 }
+
 interface NavbarMobileProps {
   items: NavbarItem[];
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
+
 export function NavbarMobile({ items, onOpenChange, open }: NavbarMobileProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>

@@ -10,6 +10,7 @@ interface Props {
   params: Promise<{ subcategory: string }>;
   searchParams: Promise<SearchParams>;
 }
+
 export default async function Page({ params, searchParams }: Props) {
   const { subcategory } = await params;
   const filters = await loadProductsFilters(searchParams);

@@ -26,7 +26,9 @@ export const authRouter = createTRPCRouter({
         },
       },
     });
+
     const exsitingUser = exsitingData.docs[0];
+
     if (exsitingUser)
       throw new TRPCError({ code: "BAD_REQUEST", message: "Username already taken" });
 
@@ -68,11 +70,13 @@ export const authRouter = createTRPCRouter({
       prefix: ctx.payload.config.cookiePrefix,
       value: data.token,
     });
+
     return data;
   }),
 
   login: publicProcedure.input(loginSchema).mutation(async ({ ctx, input }) => {
     const { email, password } = input;
+
     const data = await ctx.payload.login({
       collection: "users",
       data: {
@@ -80,11 +84,13 @@ export const authRouter = createTRPCRouter({
         password,
       },
     });
+
     if (!data.token) throw new TRPCError({ code: "UNAUTHORIZED", message: "Failed to login" });
     await generateAuthCookie({
       prefix: ctx.payload.config.cookiePrefix,
       value: data.token,
     });
+
     return data;
   }),
 });
