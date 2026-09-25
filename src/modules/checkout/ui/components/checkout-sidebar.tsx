@@ -6,12 +6,12 @@ import { Button } from "@/components/ui/button";
 
 interface Props {
   total: number;
-  onCheckout: () => void;
+  onPurchase: () => void;
   isCancelled?: boolean;
-  isPending?: boolean;
+  disabled?: boolean;
 }
 
-export function CheckoutSidebar({ onCheckout, total, isCancelled, isPending }: Props) {
+export function CheckoutSidebar({ onPurchase, total, isCancelled, disabled }: Props) {
   return (
     <div className="flex flex-col overflow-hidden rounded-md border bg-white">
       <div className="flex items-center justify-between border-b p-4">
@@ -22,8 +22,8 @@ export function CheckoutSidebar({ onCheckout, total, isCancelled, isPending }: P
       <div className="flex items-center justify-center p-4">
         <Button
           variant="elevated"
-          disabled={isPending}
-          onClick={onCheckout}
+          disabled={disabled}
+          onClick={onPurchase}
           size="lg"
           className="bg-primary hover:text-primary w-full text-base text-white hover:bg-pink-400"
         >
