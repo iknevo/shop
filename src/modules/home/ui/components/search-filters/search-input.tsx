@@ -36,7 +36,7 @@ export function SearchInput({ disabled }: { disabled?: boolean }) {
           variant="elevated"
           nativeButton={false}
           render={
-            <Link href="/library">
+            <Link prefetch href="/library">
               <BookmarkCheckIcon className="mr-2" />
               Library
             </Link>

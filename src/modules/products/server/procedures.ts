@@ -1,3 +1,5 @@
+import { TRPCError } from "@trpc/server";
+import { headers as nextHeaders } from "next/headers";
 import { Sort, type Where } from "payload";
 import { z } from "zod";
 
@@ -15,14 +17,48 @@ export const productsRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
+      const headers = await nextHeaders();
+      const session = await ctx.payload.auth({ headers });
+
       const product = await ctx.payload.findByID({
         collection: "products",
         id: input.id,
         depth: 2,
       });
 
+      if (!product) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Product not found" });
+      }
+
+      let isPurchased = false;
+
+      if (session.user) {
+        const ordersData = await ctx.payload.find({
+          collection: "orders",
+          pagination: false,
+          limit: 1,
+          where: {
+            and: [
+              {
+                product: {
+                  equals: input.id,
+                },
+              },
+              {
+                user: {
+                  equals: session.user.id,
+                },
+              },
+            ],
+          },
+        });
+
+        isPurchased = ordersData.totalDocs > 0;
+      }
+
       return {
         ...product,
+        isPurchased,
         // SAFETY: we used depth: 2, which will populate the subcategory so we will get the Image type not the id as a string but payload has no type detection for that so it will use Image | string by default
         image: product.image as Media | null,
         // SAFETY: using depth: 2
