@@ -4,7 +4,7 @@ import { useCart } from "../../hooks/use-cart";
 import { useCheckoutStates } from "../../hooks/use-checkout-state";
 import { CheckoutItem } from "../components/checkout-item";
 import { CheckoutSidebar } from "../components/checkout-sidebar";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Inbox, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -22,6 +22,7 @@ interface Props {
 export function CheckoutView({ tenantSlug }: Props) {
   const trpc = useTRPC();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { productIds, clearCart, removeProduct } = useCart(tenantSlug);
 
   const [states, setStates] = useCheckoutStates();
@@ -53,10 +54,10 @@ export function CheckoutView({ tenantSlug }: Props) {
     if (states.success) {
       setStates({ success: false, cancel: false });
       clearCart();
-      // TODO: invalidate library
-      router.push("/products");
+      queryClient.invalidateQueries(trpc.library.getMany.infiniteQueryFilter());
+      router.push("/library");
     }
-  }, [states.success, clearCart, router, setStates]);
+  }, [states.success, clearCart, router, setStates, queryClient, trpc.library.getMany]);
 
   useEffect(() => {
     if (!error) return;

@@ -3,7 +3,7 @@ import { prefetch, trpc } from "@/app/trpc/server";
 import { DEFAULT_LIMIT } from "@/constants";
 import { LibraryView } from "@/modules/library/ui/views/library-view";
 
-export default async function Page() {
+export default function Page() {
   prefetch(
     trpc.library.getMany.infiniteQueryOptions(
       { limit: DEFAULT_LIMIT },
