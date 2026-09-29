@@ -26,6 +26,9 @@ export const Tenants: CollectionConfig = {
       required: true,
       unique: true,
       admin: { description: "This is the subdomain of the store (e.g. [slug].shop.com)" },
+      access: {
+        update: ({ req }) => isSuperAdmin(req.user),
+      },
     },
     {
       name: "image",
