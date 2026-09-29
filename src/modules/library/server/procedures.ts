@@ -4,7 +4,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/app/trpc/init";
 
 import { DEFAULT_LIMIT } from "@/constants";
-import { Media, Tenant } from "@/payload-types";
+import { Media, Review, Tenant } from "@/payload-types";
 
 export const libraryRouter = createTRPCRouter({
   getOne: protectedProcedure
@@ -85,9 +85,54 @@ export const libraryRouter = createTRPCRouter({
         },
       });
 
+      const productsIds = productsData.docs.map((doc) => doc.id);
+
+      const allReviewsData = await ctx.payload.find({
+        collection: "reviews",
+        depth: 0,
+        pagination: false,
+        where: {
+          product: {
+            in: productsIds,
+          },
+        },
+      });
+
+      const reviewsByProductId = allReviewsData.docs.reduce<Record<string, Review[]>>(
+        (acc, review) => {
+          // SAFETY: depth: 0 prevents Payload from populating the product relationship,
+          // so the relationship value is the product ID returned by the query.
+          const productId = review.product as string;
+
+          acc[productId] ??= [];
+          acc[productId].push(review);
+
+          return acc;
+        },
+        {}
+      );
+
+      const dataWithSummarizedReviews = productsData.docs.map((doc) => {
+        const productReviews = reviewsByProductId[doc.id] || [];
+        const reviewCount = productReviews.length;
+
+        const reviewRating =
+          reviewCount === 0
+            ? 0
+            : Math.round(
+                (productReviews.reduce((sum, review) => sum + review.rating, 0) / reviewCount) * 10
+              ) / 10;
+
+        return {
+          ...doc,
+          reviewCount,
+          reviewRating,
+        };
+      });
+
       return {
         ...productsData,
-        docs: productsData.docs.map((document) => ({
+        docs: dataWithSummarizedReviews.map((document) => ({
           ...document,
 
           // SAFETY: Payload returns `image` as a populated Media document at the configured depth.

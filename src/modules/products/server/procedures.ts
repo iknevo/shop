@@ -7,7 +7,8 @@ import { createTRPCRouter, publicProcedure } from "@/app/trpc/init";
 
 import { DEFAULT_LIMIT } from "@/constants";
 import { sortValues } from "@/hooks/search-params";
-import { Category, Media, Tenant } from "@/payload-types";
+import { Rating } from "@/modules/reviews/types";
+import { Category, Media, Review, Tenant } from "@/payload-types";
 
 export const productsRouter = createTRPCRouter({
   getOne: publicProcedure
@@ -56,6 +57,49 @@ export const productsRouter = createTRPCRouter({
         isPurchased = ordersData.totalDocs > 0;
       }
 
+      const reviews = await ctx.payload.find({
+        collection: "reviews",
+        pagination: false,
+        where: {
+          product: {
+            equals: input.id,
+          },
+        },
+      });
+
+      const reviewRating =
+        reviews.totalDocs === 0
+          ? 0
+          : Math.round(
+              (reviews.docs.reduce((sum, review) => sum + review.rating, 0) / reviews.totalDocs) *
+                10
+            ) / 10;
+
+      const ratingDistribution = {
+        5: 0,
+        4: 0,
+        3: 0,
+        2: 0,
+        1: 0,
+      } satisfies Record<Rating, number>;
+
+      if (reviews.totalDocs > 0) {
+        reviews.docs.forEach((review) => {
+          const rating = review.rating;
+
+          if (rating >= 1 && rating <= 5 && Number.isInteger(rating)) {
+            // SAFETY: rating by default is type of number
+            ratingDistribution[rating as Rating]++;
+          }
+        });
+
+        const ratings: Rating[] = [5, 4, 3, 2, 1];
+        ratings.forEach((rating) => {
+          const count = ratingDistribution[rating] || 0;
+          ratingDistribution[rating] = Math.round((count / reviews.totalDocs) * 100);
+        });
+      }
+
       return {
         ...product,
         isPurchased,
@@ -63,6 +107,9 @@ export const productsRouter = createTRPCRouter({
         image: product.image as Media | null,
         // SAFETY: using depth: 2
         tenant: product.tenant as Tenant & { image: Media | null },
+        reviewRating,
+        reviewCount: reviews.totalDocs,
+        ratingDistribution,
       };
     }),
 
@@ -163,9 +210,54 @@ export const productsRouter = createTRPCRouter({
         limit: input.limit,
       });
 
+      const productsIds = data.docs.map((doc) => doc.id);
+
+      const allReviewsData = await ctx.payload.find({
+        collection: "reviews",
+        depth: 0,
+        pagination: false,
+        where: {
+          product: {
+            in: productsIds,
+          },
+        },
+      });
+
+      const reviewsByProductId = allReviewsData.docs.reduce<Record<string, Review[]>>(
+        (acc, review) => {
+          // SAFETY: depth: 0 prevents Payload from populating the product relationship,
+          // so the relationship value is the product ID returned by the query.
+          const productId = review.product as string;
+
+          acc[productId] ??= [];
+          acc[productId].push(review);
+
+          return acc;
+        },
+        {}
+      );
+
+      const dataWithSummarizedReviews = data.docs.map((doc) => {
+        const productReviews = reviewsByProductId[doc.id] || [];
+        const reviewCount = productReviews.length;
+
+        const reviewRating =
+          reviewCount === 0
+            ? 0
+            : Math.round(
+                (productReviews.reduce((sum, review) => sum + review.rating, 0) / reviewCount) * 10
+              ) / 10;
+
+        return {
+          ...doc,
+          reviewCount,
+          reviewRating,
+        };
+      });
+
       return {
         ...data,
-        docs: data.docs.map((document) => ({
+        docs: dataWithSummarizedReviews.map((document) => ({
           ...document,
 
           // SAFETY: Payload returns `image` as a populated Media document at the configured depth.
