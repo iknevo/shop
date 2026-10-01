@@ -30,7 +30,7 @@ export const productsRouter = createTRPCRouter({
         },
       });
 
-      if (!product) {
+      if (!product || product.isArchived) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Product not found" });
       }
 
@@ -130,7 +130,12 @@ export const productsRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      const where: Where = {};
+      const where: Where = {
+        isArchived: {
+          not_equals: true,
+        },
+      };
+
       let sort: Sort = "-createdAt";
 
       if (input.sort === "curated") {
