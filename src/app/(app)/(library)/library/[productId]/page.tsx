@@ -2,6 +2,8 @@ import { prefetch, trpc } from "@/app/trpc/server";
 
 import { LibraryProductView } from "@/modules/library/ui/views/library-product-view";
 
+export const dynamic = "force-dynamic";
+
 interface Props {
   params: Promise<{ productId: string }>;
 }

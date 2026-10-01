@@ -186,9 +186,9 @@ function unsafeDirectValue(
       unsafeDirectValue(member, environment, substitutions, resolvingAliases)
     );
     if (unsafeMembers.includes("any")) return "any";
-    return unsafeMembers.length > 0 && unsafeMembers.every((member) => member !== null)
-      ? unsafeMembers[0]
-      : null;
+    const first = unsafeMembers.at(0);
+    if (first === undefined || first === null) return null;
+    return unsafeMembers.every((member) => member !== null) ? first : null;
   }
   if (unwrapped.type !== "TSTypeReference") return null;
   const name = typeReferenceName(unwrapped);
