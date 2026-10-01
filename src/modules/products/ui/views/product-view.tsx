@@ -1,5 +1,6 @@
 "use client";
 
+import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { CheckCheckIcon, LinkIcon, StarIcon, TriangleAlert } from "lucide-react";
 import dynamic from "next/dynamic";
@@ -109,7 +110,7 @@ function ProductViewSuspense({ productId, tenantSlug }: Props) {
             </div>
             <div className="p-6">
               {data.description ? (
-                <p>{data.description}</p>
+                <RichText data={data.description} />
               ) : (
                 <p className="text-muted-foreground font-medium italic">No description provided</p>
               )}

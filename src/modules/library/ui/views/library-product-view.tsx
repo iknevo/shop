@@ -1,5 +1,6 @@
 "use client";
 
+import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowLeftIcon } from "lucide-react";
 import Link from "next/link";
@@ -54,9 +55,8 @@ export function LibraryProductViewSuspense({ productId }: Props) {
             </div>
           </div>
           <div className="lg:col-span-5">
-            {/* TODO: rich content */}
             {data.content ? (
-              <p>{data.content}</p>
+              <RichText data={data.content} />
             ) : (
               <p className="text-muted-foreground font-medium italic">No special content</p>
             )}
