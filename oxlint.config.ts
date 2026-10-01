@@ -1149,6 +1149,7 @@ export default defineConfig({
         VTTRegion: "readonly",
         WakeLock: "readonly",
         WakeLockSentinel: "readonly",
+        // oxlint-disable-next-line anti-slop/no-shape-in-symbol-names -- external Web API type name.
         WaveShaperNode: "readonly",
         WebGL2RenderingContext: "readonly",
         WebGLActiveInfo: "readonly",
@@ -1237,6 +1238,16 @@ export default defineConfig({
       plugins: ["react", "import", "jsx-a11y"],
       env: {
         node: true,
+      },
+    },
+    {
+      // shadcn-generated components: upstream narrows recharts tooltip/legend payloads with
+      // `typeof` and accepts an `unknown` payload parameter. `shadcn add` overwrites these
+      // files, so keep the strict rules on our own code only.
+      files: ["src/components/ui/**"],
+      rules: {
+        "anti-slop/no-runtime-typeof": "off",
+        "anti-slop/no-unknown-parameters": "off",
       },
     },
     {

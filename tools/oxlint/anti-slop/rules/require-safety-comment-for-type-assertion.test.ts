@@ -35,7 +35,7 @@ tester.run(
         errors: [error],
       },
     ],
-  },
+  }
 );
 
 tester.run(
@@ -68,5 +68,5 @@ tester.run(
         errors: [error],
       },
     ],
-  },
+  }
 );

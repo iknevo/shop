@@ -10,7 +10,14 @@ import { useTRPC } from "@/app/trpc/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
-import { CategoriesGetManyOutput, CategoryType } from "@/modules/categories/types";
+import { CategoryType, SubcategoryType } from "@/modules/categories/types";
+
+/** The sidebar is two levels deep: roots carry `subcategories`, leaves are plain Payload categories. */
+type SidebarEntry = CategoryType | SubcategoryType;
+
+function hasChildren(category: SidebarEntry): category is CategoryType {
+  return "subcategories" in category && category.subcategories.length > 0;
+}
 
 interface Props {
   open: boolean;
@@ -21,7 +28,7 @@ export function CategoriesSidebar({ onOpenChange, open }: Props) {
   const trpc = useTRPC();
   const { data } = useQuery(trpc.categories.getMany.queryOptions());
   const router = useRouter();
-  const [parentCategories, setParentCategories] = useState<CategoriesGetManyOutput | null>(null);
+  const [parentCategories, setParentCategories] = useState<SubcategoryType[] | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(null);
 
   const currentCategories = parentCategories ?? data ?? [];
@@ -32,9 +39,9 @@ export function CategoriesSidebar({ onOpenChange, open }: Props) {
     onOpenChange(value);
   };
 
-  const handleCategoryClick = (category: CategoryType) => {
-    if (category.subcategories && category.subcategories.length > 0) {
-      setParentCategories(category.subcategories as CategoriesGetManyOutput);
+  const handleCategoryClick = (category: SidebarEntry) => {
+    if (hasChildren(category)) {
+      setParentCategories(category.subcategories);
       setSelectedCategory(category);
     } else {
       if (parentCategories && selectedCategory) {
@@ -90,9 +97,7 @@ export function CategoriesSidebar({ onOpenChange, open }: Props) {
               className="flex w-full items-center justify-between p-4 text-left text-base font-medium hover:bg-black hover:text-white"
             >
               {category.name}
-              {category.subcategories && category.subcategories?.length > 0 && (
-                <ChevronRightIcon className="size-4" />
-              )}
+              {hasChildren(category) && <ChevronRightIcon className="size-4" />}
             </button>
           ))}
         </ScrollArea>

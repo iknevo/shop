@@ -13,8 +13,8 @@ interface Props {
 }
 
 export function SubcategoryMenu({ category, isOpen }: Props) {
-  const params = useParams();
-  const activeSub = (params.subcategory as string) ?? "";
+  const params = useParams<{ category?: string; subcategory?: string }>();
+  const activeSub = params.subcategory ?? "";
 
   if (!isOpen || !category.subcategories || category.subcategories.length === 0) {
     return null;

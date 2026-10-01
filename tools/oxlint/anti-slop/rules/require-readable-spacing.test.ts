@@ -1,7 +1,7 @@
+import createPaddingLineRule from "../vendor/eslint-stylistic/padding-line-between-statements.ts";
 import { RuleTester } from "oxlint/plugins-dev";
 
 import { requireReadableSpacingRule } from "./require-readable-spacing.ts";
-import createPaddingLineRule from "../vendor/eslint-stylistic/padding-line-between-statements.ts";
 
 const tester = new RuleTester({ languageOptions: { parserOptions: { lang: "ts" } } });
 const error = { messageId: "expectedBlankLine" };
@@ -95,5 +95,5 @@ tester.run(
         errors: [{ messageId: "unexpectedBlankLine" }],
       },
     ],
-  },
+  }
 );

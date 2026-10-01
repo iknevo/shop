@@ -53,6 +53,7 @@ function InputGroupAddon({
       data-align={align}
       className={cn(inputGroupAddonVariants({ align }), className)}
       onClick={(e) => {
+        // SAFETY: a click always dispatches with an Element target, and closest() is declared on Element.
         if ((e.target as HTMLElement).closest("button")) {
           return;
         }

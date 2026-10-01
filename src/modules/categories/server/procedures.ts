@@ -22,6 +22,7 @@ export const categoriesRouter = createTRPCRouter({
 
     const formattedData: CategoryWithSubcategories[] = data.docs.map((doc) => ({
       ...doc,
+      // SAFETY: depth: 1 populates subcategories, so docs arrive as Category documents, not ids.
       subcategories: (doc.subcategories?.docs ?? []).map((item) => item as Category),
     }));
 

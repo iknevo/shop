@@ -25,10 +25,10 @@ export function SearchFilters() {
 function SearchFiltersSuspense() {
   const trpc = useTRPC();
   const { data } = useSuspenseQuery(trpc.categories.getMany.queryOptions());
-  const params = useParams();
+  const params = useParams<{ category?: string; subcategory?: string }>();
 
-  const categoryParam = params.category as string | undefined;
-  const activeSubCategory = params.subcategory as string | undefined;
+  const categoryParam = params.category;
+  const activeSubCategory = params.subcategory;
 
   const activeCategory = categoryParam ?? "all";
   const activeCategoryData = data.find((category) => category.slug === activeCategory);

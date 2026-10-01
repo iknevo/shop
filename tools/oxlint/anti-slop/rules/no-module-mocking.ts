@@ -1,7 +1,5 @@
-import { defineRule } from "@oxlint/plugins";
-
 import { resolveVariable } from "../shared/scope.ts";
-
+import { defineRule } from "@oxlint/plugins";
 import type { ESTree, SourceCode } from "@oxlint/plugins";
 
 const moduleMockMethods = new Set(["doMock", "mock", "unstable_mockModule"]);
@@ -13,7 +11,7 @@ function importedName(node: ESTree.Node): string | null {
 
 function isTestFrameworkObject(
   sourceCode: SourceCode,
-  expression: ESTree.Expression,
+  expression: ESTree.Expression
 ): expression is ESTree.IdentifierReference {
   if (expression.type !== "Identifier") return false;
   if (
@@ -33,7 +31,9 @@ function isTestFrameworkObject(
     }
     const source = definition.parent.source.value;
     const name = importedName(definition.node);
-    return (source === "vitest" && name === "vi") || (source === "@jest/globals" && name === "jest");
+    return (
+      (source === "vitest" && name === "vi") || (source === "@jest/globals" && name === "jest")
+    );
   });
 }
 

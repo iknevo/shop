@@ -1,5 +1,4 @@
 /// <reference types="node" />
-
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -27,7 +26,7 @@ try {
         { name: "anti-slop", specifier: fileURLToPath(new URL("../index.ts", import.meta.url)) },
       ],
       rules: { "anti-slop/require-readable-spacing": "error" },
-    }),
+    })
   );
   writeFileSync(first, "export const a = 1;\n/** Attached to b. */\nexport const b = 2;\n");
   writeFileSync(second, "export function f() {\nconst a = 1;\nconst b = 2;\nreturn a + b;\n}\n");
@@ -40,11 +39,11 @@ try {
   assert.equal(fixed.status, 0, fixed.output);
   assert.equal(
     readFileSync(first, "utf8"),
-    "export const a = 1;\n\n/** Attached to b. */\nexport const b = 2;\n",
+    "export const a = 1;\n\n/** Attached to b. */\nexport const b = 2;\n"
   );
   assert.equal(
     readFileSync(second, "utf8"),
-    "export function f() {\nconst a = 1;\nconst b = 2;\n\nreturn a + b;\n}\n",
+    "export function f() {\nconst a = 1;\nconst b = 2;\n\nreturn a + b;\n}\n"
   );
 
   const stable = [readFileSync(first, "utf8"), readFileSync(second, "utf8")];

@@ -1,5 +1,5 @@
 // Local replacements for the upstream helper imports. See UPSTREAM.md.
-import type { ESTree, SourceCode, Token as SyntaxToken, Comment, Location } from "@oxlint/plugins";
+import type { Comment, ESTree, Location, SourceCode, Token as SyntaxToken } from "@oxlint/plugins";
 
 type Token = SyntaxToken | Comment;
 
@@ -37,7 +37,7 @@ export const skipChainExpression = (node: ESTree.Node): ESTree.Node =>
 
 /** Only a program or function-body expression can begin a directive prologue. */
 export const isTopLevelExpressionStatement = (
-  node: ESTree.Node,
+  node: ESTree.Node
 ): node is ESTree.ExpressionStatement =>
   node.type === "ExpressionStatement" &&
   (node.parent.type === "Program" ||

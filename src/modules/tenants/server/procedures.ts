@@ -5,6 +5,10 @@ import { createTRPCRouter, publicProcedure } from "@/app/trpc/init";
 
 import { Media, Tenant } from "@/payload-types";
 
+type TenantWithImage = Tenant & {
+  image: Media | null;
+};
+
 export const tenantsRouter = createTRPCRouter({
   getOne: publicProcedure
     .input(
@@ -31,8 +35,7 @@ export const tenantsRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "Tenant not found." });
       }
 
-      return tenant as Tenant & {
-        image: Media | null;
-      };
+      // SAFETY: depth: 2 populates tenant.image as a Media document, not an id.
+      return tenant as TenantWithImage;
     }),
 });

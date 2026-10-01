@@ -93,6 +93,7 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
 ${prefix} [data-chart=${id}] {
 ${colorConfig
   .map(([key, itemConfig]) => {
+    // SAFETY: THEMES is keyed by the same labels as every itemConfig.theme record.
     const color = itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ?? itemConfig.color;
 
     return color ? `  --color-${key}: ${color};` : null;
@@ -211,6 +212,7 @@ function ChartTooltipContent({
                             }
                           )}
                           style={
+                            /* SAFETY: React.CSSProperties does not declare custom CSS variable properties by index signature. */
                             {
                               "--color-bg": indicatorColor,
                               "--color-border": indicatorColor,
@@ -318,13 +320,16 @@ function getPayloadConfigFromPayload(config: ChartConfig, payload: unknown, key:
 
   let configLabelKey: string = key;
 
+  // SAFETY: recharts payload rows are plain objects, so `key in payload` guards the indexed read below.
   if (key in payload && typeof payload[key as keyof typeof payload] === "string") {
+    // SAFETY: the guard above narrows the indexed read to string.
     configLabelKey = payload[key as keyof typeof payload] as string;
   } else if (
     payloadPayload &&
     key in payloadPayload &&
     typeof payloadPayload[key as keyof typeof payloadPayload] === "string"
   ) {
+    // SAFETY: the guard above narrows the indexed read to string.
     configLabelKey = payloadPayload[key as keyof typeof payloadPayload] as string;
   }
 

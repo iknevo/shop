@@ -134,6 +134,7 @@ function SidebarProvider({
       <div
         data-slot="sidebar-wrapper"
         style={
+          /* SAFETY: React.CSSProperties does not declare custom CSS variable properties by index signature. */
           {
             "--sidebar-width": SIDEBAR_WIDTH,
             "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
@@ -192,6 +193,7 @@ function Sidebar({
           data-mobile="true"
           className="bg-sidebar text-sidebar-foreground w-(--sidebar-width) p-0 [&>button]:hidden"
           style={
+            /* SAFETY: React.CSSProperties does not declare custom CSS variable properties by index signature. */
             {
               "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
             } as React.CSSProperties
@@ -609,6 +611,7 @@ function SidebarMenuSkeleton({
         className="h-4 max-w-(--skeleton-width) flex-1"
         data-sidebar="menu-skeleton-text"
         style={
+          /* SAFETY: React.CSSProperties does not declare custom CSS variable properties by index signature. */
           {
             "--skeleton-width": width,
           } as React.CSSProperties

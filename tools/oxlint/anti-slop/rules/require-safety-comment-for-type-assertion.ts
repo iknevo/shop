@@ -1,5 +1,4 @@
 import { defineRule } from "@oxlint/plugins";
-
 import type { ESTree, SourceCode } from "@oxlint/plugins";
 
 type TypeAssertion = ESTree.TSAsExpression | ESTree.TSTypeAssertion;
@@ -29,7 +28,7 @@ function configuredSafetyMarkers(option: unknown): readonly string[] {
   const configured = option.markers;
   if (!Array.isArray(configured)) return DEFAULT_SAFETY_MARKERS;
   const markers = configured.flatMap((marker) =>
-    typeof marker === "string" && marker.trim().length > 0 ? [marker.trim()] : [],
+    typeof marker === "string" && marker.trim().length > 0 ? [marker.trim()] : []
   );
   return markers.length > 0 ? markers : DEFAULT_SAFETY_MARKERS;
 }
@@ -38,30 +37,21 @@ function markerPattern(markers: readonly string[]): RegExp {
   const alternation = markers
     .map((marker) => marker.replaceAll(/[.*+?^${}()|[\]\\]/gu, String.raw`\$&`))
     .join("|");
-  return new RegExp(
-    String.raw`(?:^|[^\p{L}\p{N}_])(?:${alternation})\s*:\s*\S`,
-    "u",
-  );
+  return new RegExp(String.raw`(?:^|[^\p{L}\p{N}_])(?:${alternation})\s*:\s*\S`, "u");
 }
 
 function hasSafetyJustificationBefore(
   sourceCode: SourceCode,
   owner: ESTree.Node,
   assertion: TypeAssertion,
-  pattern: RegExp,
+  pattern: RegExp
 ): boolean {
   return sourceCode
     .getCommentsBefore(owner)
-    .some(
-      (comment) => comment.end <= assertion.start && pattern.test(comment.value),
-    );
+    .some((comment) => comment.end <= assertion.start && pattern.test(comment.value));
 }
 
-function hasSafetyComment(
-  sourceCode: SourceCode,
-  node: TypeAssertion,
-  pattern: RegExp,
-): boolean {
+function hasSafetyComment(sourceCode: SourceCode, node: TypeAssertion, pattern: RegExp): boolean {
   let current: ESTree.Node = node;
   while (true) {
     if (hasSafetyJustificationBefore(sourceCode, current, node, pattern)) return true;

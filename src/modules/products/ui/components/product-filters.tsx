@@ -1,6 +1,6 @@
 "use client";
 
-import { useProductFilters } from "../../hooks/use-product-filters";
+import { type ProductFilters, useProductFilters } from "../../hooks/use-product-filters";
 import { ChevronDownIcon, ChevronRightIcon } from "lucide-react";
 import { ReactNode, useState } from "react";
 
@@ -36,19 +36,9 @@ function ProductFilter({ title, className, children }: ProductFilterProps) {
 export function ProductFilters() {
   const [filters, setFilters] = useProductFilters();
 
-  const hasFilters = Object.entries(filters).some(([key, value]) => {
-    if (key === "sort") return false;
+  const hasFilters = filters.minPrice !== "" || filters.maxPrice !== "" || filters.tags.length > 0;
 
-    if (Array.isArray(value)) {
-      return value.length > 0;
-    }
-
-    if (typeof value === "string") return value !== "";
-
-    return value !== null;
-  });
-
-  const onChange = (key: keyof typeof filters, value: unknown) => {
+  const onChange = <K extends keyof ProductFilters>(key: K, value: ProductFilters[K]) => {
     setFilters({ ...filters, [key]: value });
   };
 

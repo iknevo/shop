@@ -28,6 +28,7 @@ export function prefetch<T extends ReturnType<TRPCQueryOptions<any>>>(queryOptio
   const queryClient = getQueryClient();
 
   if (queryOptions.queryKey[1]?.type === "infinite") {
+    // SAFETY: tRPC's infinite query options have a different shape that TS cannot narrow from the generic.
     void queryClient.infiniteQuery(queryOptions as any);
   } else {
     void queryClient.query(queryOptions);
