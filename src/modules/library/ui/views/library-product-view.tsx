@@ -3,12 +3,14 @@
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowLeftIcon } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
 import { useTRPC } from "@/app/trpc/client";
 
+import { IMAGE_PLACEHOLDER } from "@/constants";
 import { ReviewSidebar } from "@/modules/reviews/ui/components/review-sidebar";
 
 interface Props {
@@ -68,5 +70,18 @@ export function LibraryProductViewSuspense({ productId }: Props) {
 }
 
 function LibraryProductViewLoading() {
-  return <p>Loading...</p>;
+  return (
+    <div className="px-4 py-10 lg:px-12">
+      <div className="overflow-hidden rounded-sm border bg-white">
+        <div className="relative aspect-[3.9] border-b">
+          <Image
+            src={IMAGE_PLACEHOLDER}
+            alt="Placeholder loading image"
+            fill
+            className="object-cover"
+          />
+        </div>
+      </div>
+    </div>
+  );
 }
