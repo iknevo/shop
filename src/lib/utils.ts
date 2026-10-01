@@ -1,7 +1,14 @@
 export { cn } from "cn";
 
 export function generateTenantURL(tenantSlug: string) {
-  return `/tenants/${tenantSlug}`;
+  if (process.env.NODE_ENV === "development") {
+    return `${process.env.NEXT_PUBLIC_APP_URL}/tenants/${tenantSlug}`;
+  }
+
+  const protocol = "https";
+  const domain = process.env.NEXT_PUBLIC_ROOT_DOMAIN!;
+
+  return `${protocol}://${tenantSlug}.${domain}`;
 }
 
 export function formatPrice(price: number | string) {
