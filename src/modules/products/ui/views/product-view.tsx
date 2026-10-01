@@ -1,7 +1,8 @@
 "use client";
 
+import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { CheckCheckIcon, LinkIcon, StarIcon } from "lucide-react";
+import { CheckCheckIcon, LinkIcon, StarIcon, TriangleAlert } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
@@ -40,7 +41,7 @@ interface Props {
 export function ProductView({ productId, tenantSlug }: Props) {
   return (
     <Suspense fallback={<ProductViewLoading />}>
-      <ErrorBoundary fallback={<p>error</p>}>
+      <ErrorBoundary fallback={<ProductViewError />}>
         <ProductViewSuspense productId={productId} tenantSlug={tenantSlug} />
       </ErrorBoundary>
     </Suspense>
@@ -109,7 +110,7 @@ function ProductViewSuspense({ productId, tenantSlug }: Props) {
             </div>
             <div className="p-6">
               {data.description ? (
-                <p>{data.description}</p>
+                <RichText data={data.description} />
               ) : (
                 <p className="text-muted-foreground font-medium italic">No description provided</p>
               )}
@@ -179,5 +180,29 @@ function ProductViewSuspense({ productId, tenantSlug }: Props) {
 }
 
 function ProductViewLoading() {
-  return <div>Loading</div>;
+  return (
+    <div className="px-4 py-10 lg:px-12">
+      <div className="overflow-hidden rounded-sm border bg-white">
+        <div className="relative aspect-[3.9] border-b">
+          <Image
+            src={IMAGE_PLACEHOLDER}
+            alt="Placeholder loading image"
+            fill
+            className="object-cover"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProductViewError() {
+  return (
+    <div className="px-4 py-10 lg:px-12">
+      <div className="flex w-full flex-col items-center justify-center gap-y-4 rounded-lg border border-dashed border-black bg-white p-8">
+        <TriangleAlert />
+        <p className="text-base font-medium">Something went wrong</p>
+      </div>
+    </div>
+  );
 }

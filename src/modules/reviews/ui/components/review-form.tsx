@@ -140,3 +140,26 @@ export function ReviewForm({ productId, initialData }: Props) {
     </form>
   );
 }
+
+export function ReviewFormLoading() {
+  return (
+    <div className="flex flex-col gap-4">
+      <p className="font-medium">Liked it? Give it a rating</p>
+      <StarPicker disabled />
+      <Textarea
+        placeholder="Want to leave a written review?"
+        disabled
+        className="min-block-3lh field-sizing-content resize-none"
+      />
+      <Button
+        variant="elevated"
+        disabled
+        type="button"
+        size="lg"
+        className="hover:text-primary w-fit bg-black text-white hover:bg-pink-400"
+      >
+        Post review
+      </Button>
+    </div>
+  );
+}
