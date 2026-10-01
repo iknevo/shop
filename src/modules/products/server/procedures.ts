@@ -127,6 +127,7 @@ export const productsRouter = createTRPCRouter({
         cursor: z.number().default(1),
         limit: z.number().default(DEFAULT_LIMIT),
         tenantSlug: z.string().nullable().optional(),
+        search: z.string().nullable().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -210,6 +211,12 @@ export const productsRouter = createTRPCRouter({
             ],
           };
         }
+      }
+
+      if (input.search) {
+        where["name"] = {
+          like: input.search,
+        };
       }
 
       const data = await ctx.payload.find({

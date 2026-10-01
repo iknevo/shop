@@ -1,5 +1,3 @@
-"use client";
-
 import { useQuery } from "@tanstack/react-query";
 import { BookmarkCheckIcon, ListFilterIcon, SearchIcon } from "lucide-react";
 import Link from "next/link";
@@ -12,7 +10,13 @@ import { Input } from "@/components/ui/input";
 
 import { CategoriesSidebar } from "./categories-sidebar";
 
-export function SearchInput({ disabled }: { disabled?: boolean }) {
+interface Props {
+  defaultValue?: string | undefined;
+  disabled?: boolean;
+  onChange?: (value: string) => void;
+}
+
+export function SearchInput({ disabled, defaultValue, onChange }: Props) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const trpc = useTRPC();
   const session = useQuery(trpc.auth.session.queryOptions());
@@ -22,7 +26,13 @@ export function SearchInput({ disabled }: { disabled?: boolean }) {
       <CategoriesSidebar open={isSidebarOpen} onOpenChange={setIsSidebarOpen} />
       <div className="relative w-full">
         <SearchIcon className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-neutral-500" />
-        <Input className="pl-8" placeholder="Search products" disabled={disabled} />
+        <Input
+          className="pl-8"
+          placeholder="Search products"
+          disabled={disabled}
+          value={defaultValue}
+          onChange={(e) => onChange?.(e.target.value)}
+        />
       </div>
       <Button
         variant={"elevated"}
