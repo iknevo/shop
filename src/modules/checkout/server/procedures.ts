@@ -130,14 +130,6 @@ export const checkoutRouter = createTRPCRouter({
 
       const totalAmount = products.docs.reduce((sum, product) => sum + product.price * 100, 0);
       const platformFeeAmount = Math.round((totalAmount * PLATFORM_FEES_PERCENT) / 100);
-      // NOTE: only for testing
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL;
-
-      console.log({
-        appUrl,
-        successUrl: `${appUrl}/tenants/${input.tenantSlug}/checkout?success=true`,
-        cancelUrl: `${appUrl}/tenants/${input.tenantSlug}/checkout?cancel=true`,
-      });
 
       const checkout = await stripe.checkout.sessions.create(
         {
