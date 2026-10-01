@@ -169,6 +169,10 @@ export const productsRouter = createTRPCRouter({
         where["tenant.slug"] = {
           equals: input.tenantSlug,
         };
+      } else {
+        where["isPrivate"] = {
+          not_equals: true,
+        };
       }
 
       if (input.category) {
