@@ -13,8 +13,7 @@ export async function generateAuthCookie({ prefix, value }: Props) {
     httpOnly: true,
     path: "/",
     ...(process.env.NODE_ENV !== "development" && {
-      sameSite: "none",
-      domain: process.env.NEXT_PUBLIC_APP_URL,
+      sameSite: "lax",
       secure: true,
     }),
   });
