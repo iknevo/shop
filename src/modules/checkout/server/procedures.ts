@@ -7,9 +7,44 @@ import { stripe } from "@/lib/stripe";
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "@/app/trpc/init";
 
+import { PLATFORM_FEES_PERCENT } from "@/constants";
 import { Media, Tenant } from "@/payload-types";
 
 export const checkoutRouter = createTRPCRouter({
+  verify: protectedProcedure.mutation(async ({ ctx }) => {
+    const user = await ctx.payload.findByID({
+      collection: "users",
+      id: ctx.session.user.id,
+      depth: 0,
+    });
+
+    if (!user) throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
+
+    // SAFETY: depth: 0, would make the tenant come as an id which is string
+    const tenantId = user.tenants?.[0]?.tenant as string;
+
+    const tenant = await ctx.payload.findByID({
+      collection: "tenants",
+      id: tenantId,
+    });
+
+    if (!tenant) throw new TRPCError({ code: "NOT_FOUND", message: "Tenant not found" });
+
+    const accountLink = await stripe.accountLinks.create({
+      account: tenant.stripeAccountId,
+      refresh_url: `${process.env.NEXT_PUBLIC_APP_URL!}/admin`,
+      return_url: `${process.env.NEXT_PUBLIC_APP_URL!}/admin`,
+      type: "account_onboarding",
+    });
+
+    if (!accountLink.url)
+      throw new TRPCError({ code: "BAD_REQUEST", message: "Failed to create verification link" });
+
+    return {
+      url: accountLink.url,
+    };
+  }),
+
   purchase: protectedProcedure
     .input(
       z.object({
@@ -61,13 +96,18 @@ export const checkoutRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "Tenant not found" });
       }
 
-      // TODO: throw error if stripe details not submitted
+      if (!tenant.stripeDetailsSubmitted) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Tenant not allowed to sell products",
+        });
+      }
 
       const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = products.docs.map(
         (product) => ({
           quantity: 1,
           price_data: {
-            unit_amount: product.price * 100, // NOTE: stripe handles amount in cents
+            unit_amount: Math.round(product.price * 100),
             currency: "usd",
             product_data: {
               name: product.name,
@@ -83,20 +123,31 @@ export const checkoutRouter = createTRPCRouter({
         })
       );
 
-      const checkout = await stripe.checkout.sessions.create({
-        customer_email: ctx.session.user.email,
-        success_url: `${process.env.NEXT_PUBLIC_APP_URL}/tenants/${input.tenantSlug}/checkout?success=true`,
-        cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/tenants/${input.tenantSlug}/checkout?cancel=true`,
-        mode: "payment",
-        line_items: lineItems,
-        invoice_creation: {
-          enabled: true,
+      const totalAmount = products.docs.reduce((sum, product) => sum + product.price * 100, 0);
+      const platformFeeAmount = Math.round((totalAmount * PLATFORM_FEES_PERCENT) / 100);
+
+      const checkout = await stripe.checkout.sessions.create(
+        {
+          customer_email: ctx.session.user.email,
+          success_url: `${process.env.NEXT_PUBLIC_APP_URL}/tenants/${input.tenantSlug}/checkout?success=true`,
+          cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/tenants/${input.tenantSlug}/checkout?cancel=true`,
+          mode: "payment",
+          line_items: lineItems,
+          invoice_creation: {
+            enabled: true,
+          },
+          // SAFETY: metadata is not strictly typed so i made a type for it and did assertion for it
+          metadata: {
+            userId: ctx.session.user.id,
+          } as CheckoutMetadata,
+          payment_intent_data: {
+            application_fee_amount: platformFeeAmount,
+          },
         },
-        // SAFETY: metadata is not strictly typed so i made a type for it and did assertion for it
-        metadata: {
-          userId: ctx.session.user.id,
-        } as CheckoutMetadata,
-      });
+        {
+          stripeAccount: tenant.stripeAccountId,
+        }
+      );
 
       if (!checkout.url) {
         throw new TRPCError({

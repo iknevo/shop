@@ -3,6 +3,8 @@ import { loginSchema, registerSchema } from "../validation";
 import { TRPCError } from "@trpc/server";
 import { headers as nextHeaders } from "next/headers";
 
+import { stripe } from "@/lib/stripe";
+
 import { createTRPCRouter, publicProcedure } from "@/app/trpc/init";
 
 export const authRouter = createTRPCRouter({
@@ -32,12 +34,18 @@ export const authRouter = createTRPCRouter({
     if (exsitingUser)
       throw new TRPCError({ code: "BAD_REQUEST", message: "Username already taken" });
 
+    const account = await stripe.accounts.create({});
+
+    if (!account) {
+      throw new TRPCError({ code: "BAD_REQUEST", message: "Failed to create stripe account" });
+    }
+
     const tenant = await ctx.payload.create({
       collection: "tenants",
       data: {
         name: username,
         slug: username,
-        stripeAccountId: "mock",
+        stripeAccountId: account.id,
       },
     });
 
